@@ -20,22 +20,36 @@ export default {
         inputs,
       );
 
-      // Step 4: Return the response as an image with CORS header
+      // Step 4: Get the Origin from the request and set CORS header dynamically
+      const origin = request.headers.get('Origin');  // Get the Origin header from the request
+      const allowedOrigin = 'https://cruzferreira.com.br';  // Your trusted origin - adjust if needed
+
+      // Only set the header if the request's Origin matches your allowed origin
+      const headers = new Headers({
+        "content-type": "image/png",
+      });
+
+      if (origin === allowedOrigin) {
+        headers.set("Access-Control-Allow-Origin", origin);  // Set to the request's Origin if it matches
+      } else {
+        // Optionally log or handle unauthorized origins
+        console.warn(`Unauthorized origin: ${origin}`);
+      }
+
+      // Step 5: Return the response
       return new Response(response, {
-        headers: {
-          "content-type": "image/png",
-          "Access-Control-Allow-Origin": "https://cruzferreira.com.br/myai/index.php",  // Set to your specific origin
-        },
+        headers: headers,
       });
     } catch (error) {
-      // Step 5: Handle errors gracefully, and add CORS header here too
+      // Step 6: Handle errors gracefully, and add CORS header
       console.error('Error in fetch handler:', error);  // Log for debugging
+      const headers = new Headers({
+        'Content-Type': 'text/plain',
+        "Access-Control-Allow-Origin": 'https://cruzferreira.com.br',  // Set to your trusted origin
+      });
       return new Response('Error: Something went wrong. Please provide a valid prompt.', {
         status: 500,  // Internal Server Error
-        headers: {
-          'Content-Type': 'text/plain',
-          "Access-Control-Allow-Origin": "https://cruzferreira.com.br/myai/index.php",  // Add CORS header to error responses
-        },
+        headers: headers,
       });
     }
   },
