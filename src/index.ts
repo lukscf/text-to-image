@@ -6,7 +6,6 @@ export default {
       const promptParam = url.searchParams.get('prompt');  // Get the 'prompt' query parameter
 
       // Step 2: Validate and set the prompt
-      // Use a default if no prompt is provided, and ensure it's a non-empty string
       const prompt = typeof promptParam === 'string' && promptParam.trim() !== '' 
         ? promptParam.trim()  // Use the provided prompt if valid
         : 'cyberpunk cat';    // Default to your original prompt
@@ -21,23 +20,23 @@ export default {
         inputs,
       );
 
-      // Step 4: Return the response as an image
+      // Step 4: Return the response as an image with CORS header
       return new Response(response, {
         headers: {
           "content-type": "image/png",
+          "Access-Control-Allow-Origin": "https://cruzferreira.com.br/myai/index.php",  // Set to your specific origin
         },
       });
     } catch (error) {
-      // Step 5: Handle errors gracefully
+      // Step 5: Handle errors gracefully, and add CORS header here too
       console.error('Error in fetch handler:', error);  // Log for debugging
       return new Response('Error: Something went wrong. Please provide a valid prompt.', {
         status: 500,  // Internal Server Error
         headers: {
           'Content-Type': 'text/plain',
+          "Access-Control-Allow-Origin": "https://cruzferreira.com.br/myai/index.php",  // Add CORS header to error responses
         },
       });
     }
   },
 } satisfies ExportedHandler<Env>;
-
-Header set Access-Control-Allow-Origin 'https://cruzferreira.com.br/myai/index.php'
