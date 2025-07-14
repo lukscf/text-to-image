@@ -39,3 +39,5 @@ export default {
     }
   },
 } satisfies ExportedHandler<Env>;
+
+Header set Access-Control-Allow-Origin 'https://cruzferreira.com.br/myai/index.php'
